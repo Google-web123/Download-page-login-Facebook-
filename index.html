@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Payment</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=AUI0iPLhAKlrxCakaSgmMQHTA4GE2695k8d2aIYRHiWrPqG5GnbAmGdc06zCXVzLH1C3agu6Xodn4t1M&currency=USD"></script>
+</head>
+<body>
+  <div class="logo">
+    
+          <center>
+            <!--Tab to edit-->
+            <img src="https://i.imgur.com/zDUFz5w.png" />
+          </center>
+    </div>
+  </div>
+
+    <form id="payment-form" action="process_payment.php" method="post">
+        <br>
+        <input type="text" id="full_name" placeholder="Full name" name="full_name" required >
+        <br />
+        <br />
+        <input type="email" id="email" name="email" placeholder="Email or phone number " required>
+        <br />
+        <br />
+        <input type="text" id="address" name="address" placeholder="City/house number/street" required>
+        <br />
+        <br />
+        <div id="paypal-button-container"></div>
+    </form>
+<br>
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '0.50' // مبلغ الدفع
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    // إرسال المعلومات إلى الخادم لحفظها في قاعدة البيانات
+                    var form = document.getElementById('payment-form');
+                    form.submit();
+                });
+            },
+            onCancel: function (data) {
+                // الدفع ملغى، إعادة التوجيه إلى صفحة الإلغاء
+                window.location.href = 'cancel.html';
+            },
+            onError: function (err) {
+                // حدث خطأ، إعادة التوجيه إلى صفحة الخطأ
+                window.location.href = 'error.html';
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>
+<style>
+  input{
+    padding: 10px;
+    width: 80%;
+    border-radius: 5px;
+    border-color: 1px #020202;
+    margin: 0px 0px 0px 20px;
+    font-size: 18px;
+    
+  }
+.logo img{
+  width: 65px;
+}
+</style>
+
